@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import com.chris.gameoflife.GameOfLifeView
+import com.chris.gameoflife.view.GameOfLifeView
 import com.chris.gameoflife.R
 import com.chris.gameoflife.contract.MainPresenter
 import com.chris.gameoflife.contract.MainView

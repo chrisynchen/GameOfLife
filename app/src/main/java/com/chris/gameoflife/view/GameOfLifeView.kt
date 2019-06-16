@@ -1,4 +1,4 @@
-package com.chris.gameoflife
+package com.chris.gameoflife.view
 
 import android.content.Context
 import android.graphics.Canvas
@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.chris.gameoflife.ScreenUtil
 import java.util.concurrent.TimeUnit
 
 
