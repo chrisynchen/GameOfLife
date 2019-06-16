@@ -20,8 +20,6 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     companion object {
         private val DEFAULT_CELL_SIZE = ScreenUtil.screenWidth / 16
-        val COLUMN_SIZE = ScreenUtil.screenWidth / DEFAULT_CELL_SIZE
-        val ROW_SIZE = ScreenUtil.screenHeight / DEFAULT_CELL_SIZE
     }
 
     private val CLICK_THRESHOLD = TimeUnit.MILLISECONDS.toMillis(100)
@@ -30,6 +28,9 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
     private var listener: Listener? = null
     private var changedList: MutableList<Triple<Int, Int, Int>>? = null
     private var lastCheckTime: Long = 0L
+    private var cellSize = DEFAULT_CELL_SIZE
+    var columnSize = ScreenUtil.screenWidth / cellSize
+    var rowSize = ScreenUtil.screenHeight / cellSize
     var lock = false
 
     fun setListener(listener: Listener) {
@@ -37,7 +38,17 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     fun setChangedList(changedList: MutableList<Triple<Int, Int, Int>>) {
-        this.changedList = changedList;
+        this.changedList = changedList
+    }
+
+    fun setCellSize(size: Int) {
+        cellSize = size
+        columnSize = ScreenUtil.screenWidth / cellSize
+        rowSize = ScreenUtil.screenHeight / cellSize
+    }
+
+    fun getCellSize(): Int {
+        return cellSize
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -50,8 +61,8 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
             for (i in 0 until it.size) {
                 for (j in 0 until it[0].size) {
                     rect.set(
-                        i * DEFAULT_CELL_SIZE, j * DEFAULT_CELL_SIZE,
-                        (i + 1) * DEFAULT_CELL_SIZE, (j + 1) * DEFAULT_CELL_SIZE
+                        i * cellSize, j * cellSize,
+                        (i + 1) * cellSize, (j + 1) * cellSize
                     )
                     paint.color = if (it[i][j] == 1) {
                         Color.GREEN
@@ -111,8 +122,10 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
 
         listener?.apply {
             getPixelArray().let {
-                val xInt = (x / DEFAULT_CELL_SIZE).toInt()
-                val yInt = (y / DEFAULT_CELL_SIZE).toInt()
+                val xInt = (x / cellSize).toInt()
+                val yInt = (y / cellSize).toInt()
+
+                if (xInt >= it.size || yInt >= it[0].size) return
 
                 setArrayElement(
                     xInt, yInt, if (it[xInt][yInt] == 0) {

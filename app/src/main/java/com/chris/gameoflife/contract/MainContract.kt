@@ -11,7 +11,7 @@ interface MainView {
 }
 
 abstract class MainPresenter(gameOfLifeViewWidth: Int, gameOfLifeViewHeight: Int, view: MainView) : BasePresenter() {
-    val pixelArray = Array(gameOfLifeViewWidth) { IntArray(gameOfLifeViewHeight) }
+    var cellArray = Array(gameOfLifeViewWidth) { IntArray(gameOfLifeViewHeight) }
 
     //x,y,value
     val changList = mutableListOf<Triple<Int, Int, Int>>()

@@ -2,7 +2,6 @@ package com.chris.gameoflife.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.chris.gameoflife.R
@@ -25,7 +24,7 @@ class MainActivity : AppCompatActivity(), GameOfLifeView.Listener, MainView {
     }
 
     override fun getPixelArray(): Array<IntArray> {
-        return presenter.pixelArray
+        return presenter.cellArray
     }
 
     private lateinit var presenter: MainPresenter
@@ -33,7 +32,7 @@ class MainActivity : AppCompatActivity(), GameOfLifeView.Listener, MainView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        presenter = MainPresenterImpl(GameOfLifeView.COLUMN_SIZE, GameOfLifeView.ROW_SIZE, this)
+        presenter = MainPresenterImpl(gameOfLifeView.columnSize, gameOfLifeView.rowSize, this)
         gameOfLifeView.setListener(this)
     }
 
@@ -74,12 +73,16 @@ class MainActivity : AppCompatActivity(), GameOfLifeView.Listener, MainView {
                 presenter.clearArrayElement()
                 gameOfLifeView.invalidate()
                 gameOfLifeView.lock = false
-                SeekBarDialog(this, object : SeekBarDialog.Listener {
-                    override fun onProgressChanged(process: Int) {
-                        Log.e("onProgressChanged", "process:$process")
-                    }
+                SeekBarDialog(
+                    this, object : SeekBarDialog.Listener {
+                        override fun onProgressChanged(process: Int) {
+                            gameOfLifeView.setCellSize(process)
+                            presenter.cellArray = Array(gameOfLifeView.columnSize) { IntArray(gameOfLifeView.rowSize) }
+                        }
 
-                }).show()
+                    },
+                    gameOfLifeView.getCellSize()
+                ).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)

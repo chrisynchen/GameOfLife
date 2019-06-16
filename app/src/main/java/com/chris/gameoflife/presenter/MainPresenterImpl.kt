@@ -31,16 +31,16 @@ class MainPresenterImpl(
     )
 
     override fun setArrayElement(x: Int, y: Int, value: Int) {
-        pixelArray.let {
+        cellArray.let {
             Log.e("setArrayElement", "x:$x, y:$y")
             it[x][y] = value
         }
     }
 
     override fun clearArrayElement() {
-        for (i in pixelArray.indices) {
-            for (j in pixelArray[0].indices) {
-                pixelArray[i][j] = 0
+        for (i in cellArray.indices) {
+            for (j in cellArray[0].indices) {
+                cellArray[i][j] = 0
             }
         }
     }
@@ -62,10 +62,10 @@ class MainPresenterImpl(
 
     private fun getNextStatus(): MutableList<Triple<Int, Int, Int>> {
         changList.clear()
-        val newPixelArray = Array(pixelArray.size) { IntArray(pixelArray[0].size) }
+        val newPixelArray = Array(cellArray.size) { IntArray(cellArray[0].size) }
         for (i in newPixelArray.indices) {
             for (j in newPixelArray[0].indices) {
-                val newValue = if (isLive(pixelArray, i, j)) 1 else 0
+                val newValue = if (isLive(cellArray, i, j)) 1 else 0
                 if (newPixelArray[i][j] == newValue) continue
 
                 newPixelArray[i][j] = newValue
@@ -73,9 +73,9 @@ class MainPresenterImpl(
             }
         }
 
-        for (i in pixelArray.indices) {
-            for (j in pixelArray[0].indices) {
-                pixelArray[i][j] = newPixelArray[i][j]
+        for (i in cellArray.indices) {
+            for (j in cellArray[0].indices) {
+                cellArray[i][j] = newPixelArray[i][j]
             }
         }
 

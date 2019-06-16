@@ -11,10 +11,15 @@ import kotlinx.android.synthetic.main.seekbar_dialog.*
 /**
  * @author chenchris on 2019-06-16.
  */
-class SeekBarDialog(context: Context, val listener: Listener) : Dialog(context) {
+class SeekBarDialog(
+    context: Context,
+    private val listener: Listener,
+    private val defaultProgress: Int
+) : Dialog(context) {
 
     private val MAX_VALUE = ScreenUtil.screenWidth / 4
     private val MIN_VALUE = 1
+    private var currentProgress = defaultProgress
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,15 +27,14 @@ class SeekBarDialog(context: Context, val listener: Listener) : Dialog(context) 
 
         seekBar.apply {
             max = MAX_VALUE
+            progress = defaultProgress
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    listener.onProgressChanged(
-                        if (progress <= 0) {
-                            MIN_VALUE
-                        } else {
-                            progress
-                        }
-                    )
+                    currentProgress = if (progress <= 0) {
+                        MIN_VALUE
+                    } else {
+                        progress
+                    }
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -41,6 +45,23 @@ class SeekBarDialog(context: Context, val listener: Listener) : Dialog(context) 
                     //do nothing
                 }
             })
+        }
+
+        confirm.setOnClickListener {
+            if (defaultProgress != currentProgress) {
+                listener.onProgressChanged(currentProgress)
+            }
+            dismiss()
+        }
+
+        cancel.setOnClickListener {
+            dismiss()
+        }
+
+        setOnDismissListener {
+            if (defaultProgress != currentProgress) {
+                listener.onProgressChanged(currentProgress)
+            }
         }
     }
 
