@@ -7,7 +7,7 @@ import com.chris.gameoflife.presenter.BasePresenter
  */
 
 interface MainView {
-    fun onRenenderNextStatus(tripleList: MutableList<Triple<Int, Int, Int>>)
+    fun onRenderNextStatus(tripleList: MutableList<Triple<Int, Int, Int>>)
 }
 
 abstract class MainPresenter(gameOfLifeViewWidth: Int, gameOfLifeViewHeight: Int, view: MainView) : BasePresenter() {
@@ -15,5 +15,6 @@ abstract class MainPresenter(gameOfLifeViewWidth: Int, gameOfLifeViewHeight: Int
 
     //x,y,value
     val changList = mutableListOf<Triple<Int, Int, Int>>()
-    abstract fun setPixelArrayElement(x: Int, y: Int, value: Int)
+    abstract fun setArrayElement(x: Int, y: Int, value: Int)
+    abstract fun clearArrayElement()
 }

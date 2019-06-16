@@ -1,6 +1,5 @@
 package com.chris.gameoflife.presenter
 
-import android.os.Looper
 import android.util.Log
 import com.chris.gameoflife.contract.MainPresenter
 import com.chris.gameoflife.contract.MainView
@@ -17,8 +16,7 @@ class MainPresenterImpl(
     gameOfLifeViewHeight: Int,
     private val view: MainView
 ) : MainPresenter(gameOfLifeViewWidth, gameOfLifeViewHeight, view) {
-
-    private val PEROIDICALLY_SECOND = 700L
+    private val PEROIDICALLY_SECOND = 300L
     private val TAG = MainPresenterImpl::class.java.simpleName
 
     private val ref = arrayOf(
@@ -32,10 +30,18 @@ class MainPresenterImpl(
         intArrayOf(1, 1)
     )
 
-    override fun setPixelArrayElement(x: Int, y: Int, value: Int) {
+    override fun setArrayElement(x: Int, y: Int, value: Int) {
         pixelArray.let {
-            Log.e("setPixelArrayElement", "x:$x, y:$y")
+            Log.e("setArrayElement", "x:$x, y:$y")
             it[x][y] = value
+        }
+    }
+
+    override fun clearArrayElement() {
+        for (i in pixelArray.indices) {
+            for (j in pixelArray[0].indices) {
+                pixelArray[i][j] = 0
+            }
         }
     }
 
@@ -47,7 +53,7 @@ class MainPresenterImpl(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                view.onRenenderNextStatus(it)
+                view.onRenderNextStatus(it)
             }, {
                 Log.e(TAG, it.toString())
             })
@@ -64,12 +70,11 @@ class MainPresenterImpl(
 
                 newPixelArray[i][j] = newValue
                 changList.add(Triple(i, j, newValue))
-                Log.e("getNextStatus", "i:$i, j:$j, newValue:$newValue")
             }
         }
 
-        for (i in 0 until pixelArray.size) {
-            for (j in 0 until pixelArray[0].size) {
+        for (i in pixelArray.indices) {
+            for (j in pixelArray[0].indices) {
                 pixelArray[i][j] = newPixelArray[i][j]
             }
         }

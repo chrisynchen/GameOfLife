@@ -4,10 +4,11 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.support.annotation.IntDef
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -17,40 +18,18 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
     View(context, attrs, defStyleAttr) {
 
     companion object {
-        const val DRAW_TYPE_POINT = 0
-        const val DRAW_TYPE_MOVE = 1
-
-        @IntDef(DRAW_TYPE_POINT, DRAW_TYPE_MOVE)
-        @Retention(AnnotationRetention.SOURCE)
-        annotation class DrawType
+        private val DEFAULT_CELL_SIZE = ScreenUtil.screenWidth / 16
+        val COLUMN_SIZE = ScreenUtil.screenWidth / DEFAULT_CELL_SIZE
+        val ROW_SIZE = ScreenUtil.screenHeight / DEFAULT_CELL_SIZE
     }
 
-    private val paintGreen: Paint = Paint().also {
-        it.isAntiAlias = true
-        it.isDither = true
-        it.color = Color.GREEN
-        it.style = Paint.Style.STROKE
-        it.strokeJoin = Paint.Join.ROUND
-        it.strokeCap = Paint.Cap.ROUND
-        it.strokeWidth = 12f
-    }
-
-    private val paintWhite: Paint = Paint().also {
-        it.isAntiAlias = true
-        it.isDither = true
-        it.color = Color.WHITE
-        it.style = Paint.Style.STROKE
-        it.strokeJoin = Paint.Join.ROUND
-        it.strokeCap = Paint.Cap.ROUND
-        it.strokeWidth = 12f
-    }
-
-    var lock = false
-
+    private val CLICK_THRESHOLD = TimeUnit.MILLISECONDS.toMillis(100)
+    private val paint = Paint()
+    private val rect = Rect()
     private var listener: Listener? = null
     private var changedList: MutableList<Triple<Int, Int, Int>>? = null
-    private var drawType = DRAW_TYPE_POINT
-    private var bufferTime: Long = 0L
+    private var lastCheckTime: Long = 0L
+    var lock = false
 
     fun setListener(listener: Listener) {
         this.listener = listener
@@ -60,35 +39,25 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
         this.changedList = changedList;
     }
 
-    fun setDrawType(@DrawType drawType: Int) {
-        this.drawType = drawType
-    }
-
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        drawCells(canvas)
+    }
 
-        if (lock) {
-            changedList?.forEach {
-                canvas.drawPoint(
-                    it.first.toFloat(), it.second.toFloat(),
-                    if (it.third == 0) {
-                        paintWhite
-                    } else {
-                        paintGreen
-                    }
-                )
-            }
-            changedList?.clear()
-            return
-        }
-
-//        canvas.drawPath(path, paint)
+    private fun drawCells(canvas: Canvas) {
         listener?.getPixelArray()?.let {
             for (i in 0 until it.size) {
                 for (j in 0 until it[0].size) {
-                    if (it[i][j] == 1) {
-                        canvas.drawPoint(i.toFloat(), j.toFloat(), paintGreen)
+                    rect.set(
+                        i * DEFAULT_CELL_SIZE, j * DEFAULT_CELL_SIZE,
+                        (i + 1) * DEFAULT_CELL_SIZE, (j + 1) * DEFAULT_CELL_SIZE
+                    )
+                    paint.color = if (it[i][j] == 1) {
+                        Color.GREEN
+                    } else {
+                        Color.WHITE
                     }
+                    canvas.drawRect(rect, paint)
                 }
             }
         }
@@ -104,12 +73,11 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
 
         val currentTime = System.currentTimeMillis()
 
-        if (currentTime - bufferTime < 100) {
-            bufferTime = currentTime
+        if (currentTime - lastCheckTime < CLICK_THRESHOLD) {
             return super.onTouchEvent(event)
         }
 
-        bufferTime = currentTime
+        lastCheckTime = currentTime
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -142,19 +110,16 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
 
         listener?.apply {
             getPixelArray().let {
-                val xInt = x.toInt()
-                val yInt = y.toInt()
+                val xInt = (x / DEFAULT_CELL_SIZE).toInt()
+                val yInt = (y / DEFAULT_CELL_SIZE).toInt()
 
-                if (drawType == DRAW_TYPE_POINT) {
-                    if (it[xInt][yInt] == 0) {
-                        setPixelArrayElement(xInt, yInt, 1)
+                setArrayElement(
+                    xInt, yInt, if (it[xInt][yInt] == 0) {
+                        1
+                    } else {
+                        0
                     }
-                } else if (drawType == DRAW_TYPE_MOVE) {
-                    setPixelArrayElement(xInt, yInt, 1)
-                    setPixelArrayElement(xInt + 1, yInt, 1)
-                    setPixelArrayElement(xInt, yInt + 1, 1)
-                    setPixelArrayElement(xInt + 1, yInt + 1, 1)
-                }
+                )
 
                 invalidate()
             }
@@ -162,7 +127,7 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     interface Listener {
-        fun setPixelArrayElement(x: Int, y: Int, value: Int)
+        fun setArrayElement(x: Int, y: Int, value: Int)
         fun getPixelArray(): Array<IntArray>
     }
 }

@@ -5,4 +5,7 @@
 
     <item android:id="@+id/menu_pause"
           android:title="@string/pause"/>
+
+    <item android:id="@+id/menu_clear"
+          android:title="@string/clear"/>
 </menu>
