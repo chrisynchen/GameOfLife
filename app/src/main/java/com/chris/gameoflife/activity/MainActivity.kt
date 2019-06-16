@@ -2,13 +2,15 @@ package com.chris.gameoflife.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.chris.gameoflife.view.GameOfLifeView
 import com.chris.gameoflife.R
 import com.chris.gameoflife.contract.MainPresenter
 import com.chris.gameoflife.contract.MainView
 import com.chris.gameoflife.presenter.MainPresenterImpl
+import com.chris.gameoflife.view.GameOfLifeView
+import com.chris.gameoflife.view.SeekBarDialog
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -64,6 +66,20 @@ class MainActivity : AppCompatActivity(), GameOfLifeView.Listener, MainView {
                 presenter.clearArrayElement()
                 gameOfLifeView.invalidate()
                 gameOfLifeView.lock = false
+                true
+            }
+
+            R.id.menu_seekBar -> {
+                presenter.unsubscribe()
+                presenter.clearArrayElement()
+                gameOfLifeView.invalidate()
+                gameOfLifeView.lock = false
+                SeekBarDialog(this, object : SeekBarDialog.Listener {
+                    override fun onProgressChanged(process: Int) {
+                        Log.e("onProgressChanged", "process:$process")
+                    }
+
+                }).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)

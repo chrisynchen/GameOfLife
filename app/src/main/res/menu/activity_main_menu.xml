@@ -8,4 +8,7 @@
 
     <item android:id="@+id/menu_clear"
           android:title="@string/clear"/>
+
+    <item android:id="@+id/menu_seekBar"
+          android:title="@string/adjust_resolution"/>
 </menu>
