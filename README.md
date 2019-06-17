@@ -16,3 +16,6 @@ Test libs:
 
 - Power mock
 - Mockito
+
+## Test
+Please refer to `MainPresenterImplTest.kt`
