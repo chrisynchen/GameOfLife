@@ -47,17 +47,6 @@ class SeekBarDialog(
             })
         }
 
-        confirm.setOnClickListener {
-            if (defaultProgress != currentProgress) {
-                listener.onProgressChanged(currentProgress)
-            }
-            dismiss()
-        }
-
-        cancel.setOnClickListener {
-            dismiss()
-        }
-
         setOnDismissListener {
             if (defaultProgress != currentProgress) {
                 listener.onProgressChanged(currentProgress)
