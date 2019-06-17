@@ -60,7 +60,7 @@ class MainPresenterImpl(
         addDisposable(disposable)
     }
 
-    private fun getNextStatus(): MutableList<Triple<Int, Int, Int>> {
+    override fun getNextStatus(): MutableList<Triple<Int, Int, Int>> {
         changList.clear()
         val newPixelArray = Array(cellArray.size) { IntArray(cellArray[0].size) }
         for (i in newPixelArray.indices) {

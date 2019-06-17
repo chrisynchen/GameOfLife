@@ -15,6 +15,8 @@ abstract class MainPresenter(gameOfLifeViewWidth: Int, gameOfLifeViewHeight: Int
 
     //x,y,value
     val changList = mutableListOf<Triple<Int, Int, Int>>()
+
     abstract fun setArrayElement(x: Int, y: Int, value: Int)
+    abstract fun getNextStatus(): MutableList<Triple<Int, Int, Int>>
     abstract fun clearArrayElement()
 }
