@@ -29,6 +29,13 @@ class MainActivity : AppCompatActivity(), GameOfLifeView.Listener, MainView {
 
     private lateinit var presenter: MainPresenter
 
+    private val seekBarDialogListener = object : SeekBarDialog.Listener {
+        override fun onProgressChanged(process: Int) {
+            gameOfLifeView.setCellSize(process)
+            presenter.cellArray = Array(gameOfLifeView.columnSize) { IntArray(gameOfLifeView.rowSize) }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -74,13 +81,8 @@ class MainActivity : AppCompatActivity(), GameOfLifeView.Listener, MainView {
                 gameOfLifeView.invalidate()
                 gameOfLifeView.lock = false
                 SeekBarDialog(
-                    this, object : SeekBarDialog.Listener {
-                        override fun onProgressChanged(process: Int) {
-                            gameOfLifeView.setCellSize(process)
-                            presenter.cellArray = Array(gameOfLifeView.columnSize) { IntArray(gameOfLifeView.rowSize) }
-                        }
-
-                    },
+                    this,
+                    seekBarDialogListener,
                     gameOfLifeView.getCellSize()
                 ).show()
                 true
