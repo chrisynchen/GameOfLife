@@ -25,6 +25,8 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
     private val CLICK_THRESHOLD = TimeUnit.MILLISECONDS.toMillis(100)
     private val paint = Paint()
     private val rect = Rect()
+    private val liveColor = Color.GREEN
+    private val deadColor = Color.WHITE
     private var listener: Listener? = null
     private var changedList: MutableList<Triple<Int, Int, Int>>? = null
     private var lastCheckTime: Long = 0L
@@ -65,9 +67,9 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
                         (i + 1) * cellSize, (j + 1) * cellSize
                     )
                     paint.color = if (it[i][j] == 1) {
-                        Color.GREEN
+                        liveColor
                     } else {
-                        Color.WHITE
+                        deadColor
                     }
                     canvas.drawRect(rect, paint)
                 }
@@ -93,28 +95,16 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                touchDown(x, y)
+                setLive(x, y)
             }
             MotionEvent.ACTION_MOVE -> {
-                touchMove(x, y)
+                setLive(x, y)
             }
             MotionEvent.ACTION_UP -> {
-                touchUp(x, y)
+                setLive(x, y)
             }
         }
         return true
-    }
-
-    private fun touchDown(x: Float, y: Float) {
-        setLive(x, y)
-    }
-
-    private fun touchMove(x: Float, y: Float) {
-        setLive(x, y)
-    }
-
-    private fun touchUp(x: Float, y: Float) {
-        setLive(x, y)
     }
 
     private fun setLive(x: Float, y: Float) {
