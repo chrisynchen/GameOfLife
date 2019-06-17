@@ -16,15 +16,3 @@ Test libs:
 
 - Power mock
 - Mockito
-
-## Demo Screenshot
-
-
-## Further Question
-1. Who can be the user of this app? Given the chance to extend this app, what are the possible features that is nice to have for the user?
-
-
-
-2. Which design patterns did you choose, and why? Any pros and cons for it?
-
-I use the MVP
