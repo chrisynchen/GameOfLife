@@ -28,19 +28,19 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
     private val liveColor = Color.GREEN
     private val deadColor = Color.WHITE
     private var listener: Listener? = null
-    private var changedList: MutableList<Triple<Int, Int, Int>>? = null
     private var lastCheckTime: Long = 0L
     private var cellSize = DEFAULT_CELL_SIZE
     var columnSize = ScreenUtil.screenWidth / cellSize
     var rowSize = ScreenUtil.screenHeight / cellSize
     var lock = false
+    private var cellArray: Array<IntArray> = Array(columnSize) { IntArray(rowSize) }
 
     fun setListener(listener: Listener) {
         this.listener = listener
     }
 
-    fun setChangedList(changedList: MutableList<Triple<Int, Int, Int>>) {
-        this.changedList = changedList
+    fun setChangedList(cellArray: Array<IntArray>) {
+        this.cellArray = cellArray
     }
 
     fun setCellSize(size: Int) {
@@ -59,7 +59,7 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     private fun drawCells(canvas: Canvas) {
-        listener?.getPixelArray()?.let {
+        cellArray.let {
             for (i in 0 until it.size) {
                 for (j in 0 until it[0].size) {
                     rect.set(
@@ -110,28 +110,21 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
     private fun setLive(x: Float, y: Float) {
         if (lock) return
 
-        listener?.apply {
-            getPixelArray().let {
-                val xInt = (x / cellSize).toInt()
-                val yInt = (y / cellSize).toInt()
+        cellArray.let {
+            val xInt = (x / cellSize).toInt()
+            val yInt = (y / cellSize).toInt()
 
-                if (xInt >= it.size || yInt >= it[0].size) return
+            if (xInt >= it.size || yInt >= it[0].size) return
 
-                setArrayElement(
-                    xInt, yInt, if (it[xInt][yInt] == 0) {
-                        1
-                    } else {
-                        0
-                    }
-                )
-
-                invalidate()
+            listener?.apply {
+                setArrayElement(xInt, yInt)
             }
+
+            invalidate()
         }
     }
 
     interface Listener {
-        fun setArrayElement(x: Int, y: Int, value: Int)
-        fun getPixelArray(): Array<IntArray>
+        fun setArrayElement(x: Int, y: Int)
     }
 }

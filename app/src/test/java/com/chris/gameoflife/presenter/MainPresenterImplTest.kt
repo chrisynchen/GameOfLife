@@ -16,7 +16,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
 import java.util.concurrent.Executor
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 /**
  * @author chenchris on 2019-06-17.
@@ -50,32 +50,38 @@ class MainPresenterImplTest {
 
     @Test
     fun setArrayElement() {
-        presenter.setArrayElement(0, 0, 1)
-        assertTrue {
-            presenter.cellArray[0][0] == 1
-        }
+        presenter.setCellArrayElement(0, 0)
+        assertEquals(1, presenter.cellArray[0][0])
 
-        presenter.setArrayElement(0, 0, 0)
-        assertTrue {
-            presenter.cellArray[0][0] == 0
-        }
+        presenter.setCellArrayElement(0, 0)
+        assertEquals(0, presenter.cellArray[0][0])
     }
 
     @Test
     fun clearArrayElement() {
-        for (i in presenter.cellArray.indices) {
-            for (j in presenter.cellArray[0].indices) {
-                presenter.setArrayElement(i, j, 1)
-            }
-        }
+        // Given
+        presenter.setCellArrayElement(0, 1)
+        presenter.setCellArrayElement(1, 2)
+        presenter.setCellArrayElement(2, 0)
+        presenter.setCellArrayElement(2, 1)
+        presenter.setCellArrayElement(2, 2)
+
+        // When
         presenter.clearArrayElement()
-        for (i in presenter.cellArray.indices) {
-            for (j in presenter.cellArray[0].indices) {
-                assertTrue {
-                    presenter.cellArray[i][j] == 0
-                }
-            }
-        }
+
+        // Then
+        assertEquals(0, presenter.cellArray[0][0])
+        assertEquals(0, presenter.cellArray[0][1])
+        assertEquals(0, presenter.cellArray[0][2])
+        assertEquals(0, presenter.cellArray[1][0])
+        assertEquals(0, presenter.cellArray[1][1])
+        assertEquals(0, presenter.cellArray[1][2])
+        assertEquals(0, presenter.cellArray[2][0])
+        assertEquals(0, presenter.cellArray[2][1])
+        assertEquals(0, presenter.cellArray[2][2])
+        assertEquals(0, presenter.cellArray[3][0])
+        assertEquals(0, presenter.cellArray[3][1])
+        assertEquals(0, presenter.cellArray[3][2])
     }
 
     /**
@@ -87,32 +93,28 @@ class MainPresenterImplTest {
     @Test
     fun getNextStatus_failed() {
         // Given
-        presenter.setArrayElement(0, 1, 1)
-        presenter.setArrayElement(1, 2, 1)
-        presenter.setArrayElement(2, 0, 1)
-        presenter.setArrayElement(2, 1, 1)
-        presenter.setArrayElement(2, 2, 1)
+        presenter.setCellArrayElement(0, 1)
+        presenter.setCellArrayElement(1, 2)
+        presenter.setCellArrayElement(2, 0)
+        presenter.setCellArrayElement(2, 1)
+        presenter.setCellArrayElement(2, 2)
 
         // When
         presenter.getNextStatus()
 
         // Then
-        for (i in presenter.cellArray.indices) {
-            for (j in presenter.cellArray[0].indices) {
-                assertTrue {
-                    if ((i == 1 && j == 0) ||
-                        (i == 1 && j == 2) ||
-                        (i == 2 && j == 1) ||
-                        (i == 2 && j == 2) ||
-                        (i == 3 && j == 1)
-                    ) {
-                        presenter.cellArray[i][j] == 1
-                    } else {
-                        presenter.cellArray[i][j] == 0
-                    }
-                }
-            }
-        }
+        assertEquals(0, presenter.cellArray[0][0])
+        assertEquals(0, presenter.cellArray[0][1])
+        assertEquals(0, presenter.cellArray[0][2])
+        assertEquals(1, presenter.cellArray[1][0])
+        assertEquals(0, presenter.cellArray[1][1])
+        assertEquals(1, presenter.cellArray[1][2])
+        assertEquals(0, presenter.cellArray[2][0])
+        assertEquals(1, presenter.cellArray[2][1])
+        assertEquals(1, presenter.cellArray[2][2])
+        assertEquals(0, presenter.cellArray[3][0])
+        assertEquals(1, presenter.cellArray[3][1])
+        assertEquals(0, presenter.cellArray[3][2])
     }
 
 }

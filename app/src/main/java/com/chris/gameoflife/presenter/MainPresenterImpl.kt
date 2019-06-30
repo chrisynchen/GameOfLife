@@ -30,11 +30,17 @@ class MainPresenterImpl(
         intArrayOf(1, 1)
     )
 
-    override fun setArrayElement(x: Int, y: Int, value: Int) {
+    override fun setCellArrayElement(x: Int, y: Int) {
         cellArray.let {
-            Log.e("setArrayElement", "x:$x, y:$y")
-            it[x][y] = value
+            Log.e("setCellArrayElement", "x:$x, y:$y")
+            it[x][y] = if (it[x][y] == 0) {
+                1
+            } else {
+                0
+            }
         }
+
+        view.onRenderNextStatus(cellArray)
     }
 
     override fun clearArrayElement() {
@@ -43,6 +49,7 @@ class MainPresenterImpl(
                 cellArray[i][j] = 0
             }
         }
+        view.onRenderNextStatus(cellArray)
     }
 
     override fun subscribe() {
@@ -60,8 +67,7 @@ class MainPresenterImpl(
         addDisposable(disposable)
     }
 
-    override fun getNextStatus(): MutableList<Triple<Int, Int, Int>> {
-        changList.clear()
+    override fun getNextStatus(): Array<IntArray> {
         val newPixelArray = Array(cellArray.size) { IntArray(cellArray[0].size) }
         for (i in newPixelArray.indices) {
             for (j in newPixelArray[0].indices) {
@@ -69,7 +75,6 @@ class MainPresenterImpl(
                 if (newPixelArray[i][j] == newValue) continue
 
                 newPixelArray[i][j] = newValue
-                changList.add(Triple(i, j, newValue))
             }
         }
 
@@ -79,7 +84,7 @@ class MainPresenterImpl(
             }
         }
 
-        return changList
+        return newPixelArray
     }
 
     private fun isLive(pixelArray: Array<IntArray>, i: Int, j: Int): Boolean {

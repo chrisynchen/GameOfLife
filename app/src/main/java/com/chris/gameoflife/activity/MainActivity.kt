@@ -14,17 +14,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), GameOfLifeView.Listener, MainView {
-    override fun onRenderNextStatus(tripleList: MutableList<Triple<Int, Int, Int>>) {
-        gameOfLifeView.setChangedList(tripleList)
+
+    override fun onRenderNextStatus(cellArray: Array<IntArray>) {
+        gameOfLifeView.setChangedList(cellArray)
         gameOfLifeView.invalidate()
     }
 
-    override fun setArrayElement(x: Int, y: Int, value: Int) {
-        return presenter.setArrayElement(x, y, value)
-    }
-
-    override fun getPixelArray(): Array<IntArray> {
-        return presenter.cellArray
+    override fun setArrayElement(x: Int, y: Int) {
+        return presenter.setCellArrayElement(x, y)
     }
 
     private lateinit var presenter: MainPresenter
@@ -59,6 +56,7 @@ class MainActivity : AppCompatActivity(), GameOfLifeView.Listener, MainView {
         return when (item.itemId) {
             R.id.menu_start -> {
                 gameOfLifeView.lock = true
+                presenter.unsubscribe()
                 presenter.subscribe()
                 true
             }
