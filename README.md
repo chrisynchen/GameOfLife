@@ -1,3 +1,5 @@
+![master branch](https://img.shields.io/badge/master-:-blue.svg?style=social)[![Build Status](https://travis-ci.com/sasowang/GameOfLife.svg)](https://travis-ci.org/sasowang/GameOfLife)
+
 # Game of life App
 
 ## Introduction
