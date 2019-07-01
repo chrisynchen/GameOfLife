@@ -10,12 +10,17 @@ android:
     - tools
     - platform-tools
     - build-tools-28.0.3
-    - android-27
+    - android-28
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
     - addon-google_apis-google-19
     - sys-img-armeabi-v7a-android-19
+
+before_install:
+    - yes | sdkmanager "platforms;android-28"
+    - yes | sdkmanager "build-tools;28.0.3"
+
 
 script:
   # connectedStagingDebugAndroidTest => run instrumentation tests
