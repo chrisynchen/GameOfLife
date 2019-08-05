@@ -7,10 +7,11 @@ import android.view.MenuItem
 import com.chris.gameoflife.R
 import com.chris.gameoflife.contract.MainPresenter
 import com.chris.gameoflife.contract.MainView
-import com.chris.gameoflife.presenter.MainPresenterImpl
+import com.chris.gameoflife.dagger.DaggerMainPresenterComponent
 import com.chris.gameoflife.view.GameOfLifeView
 import com.chris.gameoflife.view.SeekBarDialog
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity(), GameOfLifeView.Listener, MainView {
@@ -24,7 +25,8 @@ class MainActivity : AppCompatActivity(), GameOfLifeView.Listener, MainView {
         return presenter.setCellArrayElement(x, y)
     }
 
-    private lateinit var presenter: MainPresenter
+    @Inject
+    lateinit var presenter: MainPresenter
 
     private val seekBarDialogListener = object : SeekBarDialog.Listener {
         override fun onProgressChanged(process: Int) {
@@ -36,7 +38,12 @@ class MainActivity : AppCompatActivity(), GameOfLifeView.Listener, MainView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        presenter = MainPresenterImpl(gameOfLifeView.columnSize, gameOfLifeView.rowSize, this)
+        val component = DaggerMainPresenterComponent.builder()
+            .gameOfLifeViewWidth(gameOfLifeView.columnSize)
+            .gameOfLifeViewHeight(gameOfLifeView.rowSize)
+            .view(this)
+            .build()
+        component.inject(this)
         gameOfLifeView.setListener(this)
     }
 

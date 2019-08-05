@@ -7,14 +7,16 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * @author chenchris on 2019-06-15.
  */
-class MainPresenterImpl(
-    gameOfLifeViewWidth: Int,
-    gameOfLifeViewHeight: Int,
-    private val view: MainView
+class MainPresenterImpl @Inject constructor(
+    @Named("gameOfLifeViewWidth") gameOfLifeViewWidth: Int,
+    @Named("gameOfLifeViewHeight") gameOfLifeViewHeight: Int,
+    val view: MainView
 ) : MainPresenter(gameOfLifeViewWidth, gameOfLifeViewHeight, view) {
     private val PEROIDICALLY_SECOND = 300L
     private val TAG = MainPresenterImpl::class.java.simpleName
