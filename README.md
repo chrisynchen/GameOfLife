@@ -13,6 +13,7 @@ And also add test for the presenter to protect the business logic.
 Use third-party lib as below:
 
 - Rxjava2
+- Dagger2
 
 Test libs:
 
