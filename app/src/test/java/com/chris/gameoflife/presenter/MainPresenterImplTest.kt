@@ -35,7 +35,7 @@ class MainPresenterImplTest {
 
         val immediate = object : Scheduler() {
             override fun createWorker(): Worker {
-                return ExecutorScheduler.ExecutorWorker(Executor { it.run() }, false)
+                return ExecutorScheduler.ExecutorWorker({ it.run() }, false)
             }
         }
 

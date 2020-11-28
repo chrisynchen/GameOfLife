@@ -4,6 +4,4 @@
     <string name="pause">Pause</string>
     <string name="clear">Clear All</string>
     <string name="adjust_resolution">Adjust Resolution</string>
-    <string name="confirm">Confirm</string>
-    <string name="cancel">Cancel</string>
 </resources>

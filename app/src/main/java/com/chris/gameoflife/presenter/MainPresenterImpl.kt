@@ -18,7 +18,11 @@ class MainPresenterImpl @Inject constructor(
     @Named("gameOfLifeViewHeight") gameOfLifeViewHeight: Int,
     val view: MainView
 ) : MainPresenter(gameOfLifeViewWidth, gameOfLifeViewHeight, view) {
-    private val PEROIDICALLY_SECOND = 300L
+
+    companion object {
+        private const val PERIODICALLY_SECOND = 300L
+    }
+
     private val TAG = MainPresenterImpl::class.java.simpleName
 
     private val ref = arrayOf(
@@ -55,7 +59,7 @@ class MainPresenterImpl @Inject constructor(
     }
 
     override fun subscribe() {
-        val disposable = Observable.interval(PEROIDICALLY_SECOND, TimeUnit.MILLISECONDS)
+        val disposable = Observable.interval(PERIODICALLY_SECOND, TimeUnit.MILLISECONDS)
             .map {
                 getNextStatus()
             }

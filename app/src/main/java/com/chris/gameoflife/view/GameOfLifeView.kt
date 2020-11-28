@@ -60,8 +60,8 @@ class GameOfLifeView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     private fun drawCells(canvas: Canvas) {
         cellArray.let {
-            for (i in 0 until it.size) {
-                for (j in 0 until it[0].size) {
+            for (i in it.indices) {
+                for (j in it[0].indices) {
                     rect.set(
                         i * cellSize, j * cellSize,
                         (i + 1) * cellSize, (j + 1) * cellSize
