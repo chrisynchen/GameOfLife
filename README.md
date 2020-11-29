@@ -9,6 +9,9 @@ There are some function implement via the menu in toolbar. You can easily to cha
 
 And also add test for the presenter to protect the business logic.
 
+## Demo Screenshot
+<img src="demo/demo.gif" width=320/>
+
 ## Third party libs
 Use third-party lib as below:
 
